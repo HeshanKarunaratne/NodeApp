@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({
 	extended: true
 }));
 
-/*
+
 global.mc = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -17,17 +17,17 @@ global.mc = mysql.createConnection({
 	database: '',
 	 socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
 });
-*/
+
 
 const myJWTSecretKey = 'my-secret-key';
 
-global.mc = mysql.createConnection({
-	host:'192.248.32.211',
-	user: 'heshan',
-	password: 'Hsh7867',
-	database: '',
-	insecureAuth:true
-	});
+// global.mc = mysql.createConnection({
+// 	host:'192.248.32.211',
+// 	user: 'heshan',
+// 	password: 'Hsh7867',
+// 	database: '',
+// 	insecureAuth:true
+// 	});
 
 
 mc.connect();
@@ -40,12 +40,17 @@ app.post('/login/:IndexNo/:StdPassword', function (req, res) {
 	IndexNo = req.params.IndexNo;
 	let StdPassword = req.params.StdPassword;
 	let data = IndexNo.substring(2, 6);
+	
 	database = 'as' + data + 'web';
 	let userdata = { "IndexNo": IndexNo, "StdPassword": StdPassword };
-	mc.changeUser({ database: database }, function (err) {
-		if (err) throw err;
+	mc.changeUser({ database: database }, function (error) {
+	if(error){
+		throw error;
+	}else{
+		console.log('Connected');
+	}
 	});
-
+	
 	if ((!IndexNo) || (!StdPassword)) {
 
 		return res.send({ 'message': 'false' });
@@ -78,7 +83,6 @@ app.post('/login/:IndexNo/:StdPassword', function (req, res) {
 	});
 
 });
-
 
 function isValidToken(token) {
 	try {
